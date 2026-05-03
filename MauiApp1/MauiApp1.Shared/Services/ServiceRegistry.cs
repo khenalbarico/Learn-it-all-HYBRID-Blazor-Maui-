@@ -1,4 +1,4 @@
-﻿using MauiApp1.Shared.Services.Api;
+﻿using MauiApp1.Shared.Services.Api.ApiClients;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiApp1.Shared.Services;

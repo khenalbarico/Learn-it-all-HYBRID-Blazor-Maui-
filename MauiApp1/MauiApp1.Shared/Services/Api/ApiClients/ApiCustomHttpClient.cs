@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace MauiApp1.Shared.Services.Api;
+namespace MauiApp1.Shared.Services.Api.ApiClients;
 
 public static class ApiCustomHttpClient
 {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 
-namespace MauiApp1.Shared.Services.Api;
+namespace MauiApp1.Shared.Services.Api.ApiClients;
 
 public class ApiClient (IHttpClientFactory _httpClientFactory) : IApiClient
 {

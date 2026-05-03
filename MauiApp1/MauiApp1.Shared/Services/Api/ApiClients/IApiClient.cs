@@ -1,4 +1,4 @@
-﻿namespace MauiApp1.Shared.Services.Api;
+﻿namespace MauiApp1.Shared.Services.Api.ApiClients;
 
 public interface IApiClient
 {

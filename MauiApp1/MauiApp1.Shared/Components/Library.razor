@@ -1,0 +1,135 @@
+﻿@using MauiApp1.Shared.Services.Api.ApiModels
+@inject HttpClient Http
+
+<div class="library-page">
+    <div class="library-header">
+        <div>
+            <h1>Educational Books</h1>
+            <p>Find and purchase learning materials easily.</p>
+        </div>
+    </div>
+
+    <div class="search-card">
+        <input @bind="SearchText" @bind:event="oninput" placeholder="Search book title or description..." />
+
+        <div class="filter-grid">
+            <select @bind="SelectedCategory">
+                <option value="">All Categories</option>
+                @foreach (var item in CategoryOptions)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+
+            <select @bind="SelectedMainTopic">
+                <option value="">All Main Topics</option>
+                @foreach (var item in MainTopicOptions)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+
+            <select @bind="SelectedSubTopic">
+                <option value="">All Subtopics</option>
+                @foreach (var item in SubTopicOptions)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="result-row">
+        <strong>@FilteredBooks.Count()</strong>
+        <span>books found</span>
+    </div>
+
+    @if (IsLoading)
+    {
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <p>Loading books...</p>
+        </div>
+    }
+    else if (!FilteredBooks.Any())
+    {
+        <div class="empty-box">
+            <h3>No books found</h3>
+            <p>Try changing your filters or search keyword.</p>
+        </div>
+    }
+    else
+    {
+        <div class="book-list">
+            @foreach (var book in FilteredBooks)
+            {
+                <div class="book-card">
+                    <div class="book-cover">
+                        <span>BOOK</span>
+                    </div>
+
+                    <div class="book-info">
+                        <h3>@book.Title</h3>
+                        <p>@book.Description</p>
+
+                        <div class="chips">
+                            <span>@book.Category</span>
+                            <span>@book.MainTopic</span>
+                            <span>@book.SubTopic</span>
+                        </div>
+
+                        <div class="book-footer">
+                            <strong>₱@book.Price.ToString("N2")</strong>
+                            <button>Buy Now</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Book> Books { get; set; } = [];
+    private bool IsLoading { get; set; } = true;
+
+    private string SearchText { get; set; } = "";
+    private string SelectedCategory { get; set; } = "";
+    private string SelectedMainTopic { get; set; } = "";
+    private string SelectedSubTopic { get; set; } = "";
+
+    private IEnumerable<string> CategoryOptions => Books.Select(x => x.Category.ToString()).Distinct().OrderBy(x => x);
+    private IEnumerable<string> MainTopicOptions => Books.Select(x => x.MainTopic.ToString()).Distinct().OrderBy(x => x);
+    private IEnumerable<string> SubTopicOptions => Books.Select(x => x.SubTopic.ToString()).Distinct().OrderBy(x => x);
+
+    private IEnumerable<Book> FilteredBooks =>
+        Books.Where(book =>
+            (string.IsNullOrWhiteSpace(SearchText) ||
+             book.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+             book.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+
+            (string.IsNullOrWhiteSpace(SelectedCategory) ||
+             book.Category.ToString() == SelectedCategory) &&
+
+            (string.IsNullOrWhiteSpace(SelectedMainTopic) ||
+             book.MainTopic.ToString() == SelectedMainTopic) &&
+
+            (string.IsNullOrWhiteSpace(SelectedSubTopic) ||
+             book.SubTopic.ToString() == SelectedSubTopic)
+        );
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await Http.GetFromJsonAsync<GetAllBooks>("api/books");
+            Books = result?.Books?.ToList() ?? [];
+        }
+        catch
+        {
+            Books = [];
+        }
+
+        IsLoading = false;
+    }
+}

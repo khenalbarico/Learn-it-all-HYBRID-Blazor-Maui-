@@ -1,0 +1,10 @@
+﻿.app-shell {
+    min-height: 100vh;
+    background: #ffffff;
+    padding-bottom: 90px;
+    font-family: Arial, sans-serif;
+}
+
+.app-content {
+    min-height: 100vh;
+}
