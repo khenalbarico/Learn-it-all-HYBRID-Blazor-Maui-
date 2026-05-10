@@ -1,26 +1,20 @@
 ﻿<div class="bottom-nav">
     <button class="nav-item @(ActiveTab == "Library" ? "active" : "")" @onclick="@(() => ChangeTab("Library"))">
-        <span class="icon">📚</span>
+        <span class="icon"><i class="ti ti-books" aria-hidden="true"></i></span>
         <span>Library</span>
     </button>
-
     <button class="nav-item @(ActiveTab == "Previewer" ? "active" : "")" @onclick="@(() => ChangeTab("Previewer"))">
-        <span class="icon">📄</span>
+        <span class="icon"><i class="ti ti-file-text" aria-hidden="true"></i></span>
         <span>PDF</span>
     </button>
-
     <button class="nav-item @(ActiveTab == "Account" ? "active" : "")" @onclick="@(() => ChangeTab("Account"))">
-        <span class="icon">👤</span>
+        <span class="icon"><i class="ti ti-user" aria-hidden="true"></i></span>
         <span>Account</span>
     </button>
 </div>
-
 @code {
-    [Parameter] public string                ActiveTab        { get; set; } = "Library";
+    [Parameter] public string ActiveTab { get; set; } = "Library";
     [Parameter] public EventCallback<string> ActiveTabChanged { get; set; }
-
     private async Task ChangeTab(string tab)
-    {
-        await ActiveTabChanged.InvokeAsync(tab);
-    }
+        => await ActiveTabChanged.InvokeAsync(tab);
 }
