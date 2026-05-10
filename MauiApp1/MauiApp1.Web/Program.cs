@@ -1,3 +1,4 @@
+using MauiApp1.Shared.Services;
 using MauiApp1.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+var env = builder.Environment.IsDevelopment() ? "localhost" : "production";
+
+builder.Services.RegisterServices(env);
 
 var app = builder.Build();
 

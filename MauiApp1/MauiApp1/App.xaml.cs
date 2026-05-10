@@ -5,11 +5,7 @@
         public App()
         {
             InitializeComponent();
-        }
-
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new MainPage()) { Title = "MauiApp1" };
+            MainPage = new MainPage(); 
         }
     }
 }
