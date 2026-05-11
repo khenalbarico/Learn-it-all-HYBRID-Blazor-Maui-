@@ -1,0 +1,157 @@
+﻿@page "/"
+@page "/library"
+@inject IApiServices Api
+@inject AppState State
+@inject NavigationManager Nav
+@implements IDisposable
+
+<div class="library-page">
+    <div class="page-header">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <svg width="38" height="38" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(10,8)">
+                    <path d="M50 10 L50 75 L5 95 L5 30 Z" fill="#1B6CA8" />
+                    <path d="M50 10 L50 75 L95 95 L95 30 Z" fill="#1B6CA8" />
+                    <path d="M50 10 L50 75 L20 90 L20 30 Z" fill="#134f7a" />
+                    <path d="M50 10 L50 75 L80 90 L80 30 Z" fill="#134f7a" />
+                    <path d="M50 10 C50 10 28 35 28 55 L50 75 L72 55 C72 35 50 10 50 10 Z" fill="#F7941D" />
+                    <path d="M50 55 L50 78" stroke="#1A2332" stroke-width="4" stroke-linecap="round" />
+                    <circle cx="50" cy="80" r="4" fill="#1A2332" />
+                </g>
+            </svg>
+            <div>
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; color:var(--clr-orange); line-height:1;">Learn It All</div>
+                <div style="font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--clr-ink); line-height:1.1; margin-top:2px;">Your Library</div>
+            </div>
+        </div>
+        <p>Discover your next great read</p>
+    </div>
+
+    <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input type="text"
+               placeholder="Search books..."
+               @bind="searchQuery"
+               @bind:event="oninput" />
+    </div>
+
+    @if (State.IsLoading)
+    {
+        <div class="section-label">Loading collection</div>
+        <div class="skeleton-grid">
+            @for (int i = 0; i < 6; i++)
+            {
+                <div class="skeleton-card">
+                    <div class="skeleton-cover"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (State.Error is not null)
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m15 9-6 6M9 9l6 6" />
+            </svg>
+            <h3>Something went wrong</h3>
+            <p>@State.Error</p>
+        </div>
+    }
+    else if (!FilteredBooks.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            <h3>No books found</h3>
+            <p>@(searchQuery.Length > 0 ? "Try a different search term." : "Your library is empty right now.")</p>
+        </div>
+    }
+    else
+    {
+        <div class="section-label">@FilteredBooks.Count() titles</div>
+        <div class="books-grid">
+            @foreach (var book in FilteredBooks)
+            {
+                var b = book;
+                <div class="book-card" @onclick="() => OpenBook(b)">
+                    <div class="book-cover-wrap">
+                        @if (!string.IsNullOrEmpty(b.ImageUrl))
+                        {
+                            <img src="@b.ImageUrl" alt="@b.Title" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="book-cover-placeholder">
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                </svg>
+                            </div>
+                        }
+                        <span class="book-price-badge @(b.Price == 0 ? "free" : "")">
+                            @(b.Price == 0 ? "Free" : $"₱{b.Price:N2}")
+                        </span>
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title">@b.Title</div>
+                        @if (!string.IsNullOrEmpty(b.Desription))
+                        {
+                            <div class="book-desc">@b.Desription</div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string searchQuery = "";
+
+    private IEnumerable<Book> FilteredBooks =>
+        string.IsNullOrWhiteSpace(searchQuery)
+            ? State.Books
+            : State.Books.Where(b =>
+                b.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                b.Desription.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.OnChange += StateHasChanged;
+
+        if (!State.HasLoaded && !State.IsLoading)
+        {
+            State.SetLoading();
+            try
+            {
+                var books = await Api.GetAllBooksAsync();
+                State.SetBooks(books);
+            }
+            catch (Exception ex)
+            {
+                State.SetError(ex.Message);
+            }
+        }
+    }
+
+    private void OpenBook(Book book)
+    {
+        State.SelectBook(book);
+        Nav.NavigateTo("/viewer");
+    }
+
+    public void Dispose()
+    {
+        State.OnChange -= StateHasChanged;
+    }
+}
