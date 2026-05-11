@@ -8,7 +8,7 @@ public class ApiUrlGetter : IApiUrlGetter
 
         return env switch
         {
-            "localhost" => "http://localhost:7041/api/relay",
+            "localhost" => "http://localhost:7041",
             _           => "https://sample.azurewebsites.net/"
         };
     }
