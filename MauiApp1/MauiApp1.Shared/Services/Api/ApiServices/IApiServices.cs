@@ -7,4 +7,7 @@ public interface IApiServices
 {
     Task<AppUser?> TryGetAppUser(string idToken, string uid);
     Task<IEnumerable<Book>> GetAllBooksAsync();
+    Task SignUpAsync(string email, string password);
+    Task<GetSignInResult> SignInAsync(string email, string password);
+    Task SaveAppUser(string idToken, AppUser user);
 }
