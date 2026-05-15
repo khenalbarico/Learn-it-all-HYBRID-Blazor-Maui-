@@ -1,6 +1,38 @@
 .page-header {
-    padding: 52px 20px 16px;
+    padding: 52px 20px 20px;
+    position: relative;
+    overflow: hidden;
 }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        right: -24px;
+        width: 180px;
+        height: 160px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 160'%3E%3Cpath d='M90 130 L90 20 L10 45 L10 150 Z' fill='%231B6CA8' opacity='0.06'/%3E%3Cpath d='M90 130 L90 20 L170 45 L170 150 Z' fill='%231B6CA8' opacity='0.06'/%3E%3Cpath d='M90 20 C90 20 60 50 60 75 L90 130 L120 75 C120 50 90 20 90 20 Z' fill='%23F7941D' opacity='0.10'/%3E%3Ccircle cx='148' cy='40' r='18' fill='none' stroke='%231B6CA8' stroke-width='1.2' opacity='0.08'/%3E%3Ccircle cx='148' cy='40' r='10' fill='none' stroke='%231B6CA8' stroke-width='0.8' opacity='0.06'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(27,108,168,0.07) 1px, transparent 1px);
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+        mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 40%, transparent 100%);
+    }
+
+    .page-header > * {
+        position: relative;
+        z-index: 1;
+    }
 
     .page-header .eyebrow {
         font-size: 11px;
@@ -26,7 +58,7 @@
     }
 
 .search-bar {
-    margin: 8px 20px 20px;
+    margin: 8px 20px 24px;
     position: relative;
 }
 
@@ -74,7 +106,18 @@
     color: var(--clr-text-muted);
     padding: 0 20px;
     margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+
+    .section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--clr-border), transparent);
+        margin-right: 20px;
+    }
 
 .books-grid {
     display: grid;
@@ -92,18 +135,32 @@
     cursor: pointer;
     transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
     animation: fadeUp 0.38s ease both;
+    position: relative;
 }
+
+    .book-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 36px;
+        height: 36px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cpath d='M0 0 Q18 0 18 18' fill='none' stroke='%231B6CA8' stroke-width='1.2' opacity='0.18'/%3E%3Cpath d='M0 0 Q10 0 10 10' fill='none' stroke='%23F7941D' stroke-width='0.8' opacity='0.15'/%3E%3C/svg%3E");
+        background-size: contain;
+        pointer-events: none;
+        z-index: 2;
+    }
 
     .book-card:hover {
         box-shadow: var(--shadow-hover);
-        transform: translateY(-4px);
-        border-color: rgba(27,108,168,0.18);
+        transform: translateY(-5px) rotate(-0.4deg);
+        border-color: rgba(27,108,168,0.2);
     }
 
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(18px);
+        transform: translateY(20px);
     }
 
     to {
@@ -123,17 +180,17 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.42s ease;
+        transition: transform 0.44s ease;
     }
 
 .book-card:hover .book-cover-wrap img {
-    transform: scale(1.05);
+    transform: scale(1.06);
 }
 
 .book-cover-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, var(--clr-blue-wash) 0%, var(--clr-surface-2) 100%);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'%3E%3Crect width='100' height='150' fill='%23e8f2fa'/%3E%3Cpath d='M20 30 Q50 10 80 30 L80 120 Q50 140 20 120 Z' fill='%23d0e8f5' opacity='0.6'/%3E%3Cpath d='M30 50 L70 50' stroke='%233d8ec5' stroke-width='1.5' opacity='0.25'/%3E%3Cpath d='M30 60 L70 60' stroke='%233d8ec5' stroke-width='1.5' opacity='0.20'/%3E%3Cpath d='M30 70 L60 70' stroke='%233d8ec5' stroke-width='1.5' opacity='0.18'/%3E%3Ccircle cx='50' cy='95' r='14' fill='none' stroke='%231B6CA8' stroke-width='1.5' opacity='0.18'/%3E%3Cpath d='M43 95 L50 88 L57 95' fill='none' stroke='%231B6CA8' stroke-width='1.5' stroke-linecap='round' opacity='0.22'/%3E%3C/svg%3E") center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,29 +201,42 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: rgba(255,255,255,0.94);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 20px;
     padding: 3px 10px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     color: var(--clr-orange-deep);
-    border: 1px solid rgba(247,148,29,0.22);
+    border: 1px solid rgba(247,148,29,0.25);
+    letter-spacing: 0.01em;
 }
 
     .book-price-badge.free {
         color: var(--clr-blue);
-        border-color: rgba(27,108,168,0.22);
+        border-color: rgba(27,108,168,0.25);
     }
 
 .book-info {
     padding: 12px;
+    background: var(--clr-bg);
+    position: relative;
 }
+
+    .book-info::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 12px;
+        right: 12px;
+        height: 1px;
+        background: repeating-linear-gradient( 90deg, var(--clr-border-soft) 0px, var(--clr-border-soft) 4px, transparent 4px, transparent 8px );
+    }
 
 .book-title {
     font-family: var(--font-display);
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     line-height: 1.3;
     color: var(--clr-text-primary);
@@ -177,7 +247,7 @@
 }
 
 .book-desc {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--clr-text-muted);
     margin-top: 5px;
     display: -webkit-box;
@@ -254,7 +324,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 72px 24px;
+    padding: 64px 24px;
     text-align: center;
     gap: 12px;
 }
