@@ -1,43 +1,49 @@
 [
   {
-    "Uid": "intro_001",
+    "Uid": "PSYCHOMETRICIAN",
+    "Category": "Reviewer",
     "ImageUrl": "",
-    "Title": "Introduction to Algebra",
+    "Title": "Psychometrician",
     "Description": "A beginner-friendly guide to algebraic thinking and problem solving.",
     "Price": 0
   },
   {
-    "Uid": "intro_002",
+    "Uid": "PHARMACY",
+    "Category": "Reviewer",
     "ImageUrl": "",
-    "Title": "Basic Physics",
+    "Title": "Pharmacy",
     "Description": "Explore the fundamental principles of physics through simple explanations.",
     "Price": 149.00
   },
   {
-    "Uid": "intro_003",
+    "Uid": "L.E.T",
+    "Category": "Reviewer",
     "ImageUrl": "",
-    "Title": "World History 101",
+    "Title": "L.E.T",
     "Description": "A comprehensive overview of major historical events across civilizations.",
     "Price": 199.00
   },
   {
-    "Uid": "intro_004",
+    "Uid": "PHYSICS",
+    "Category": "CollegeCourse",
     "ImageUrl": "",
-    "Title": "English Grammar Essentials",
+    "Title": "Physics",
     "Description": "Master the rules of English grammar with practical examples.",
     "Price": 0
   },
   {
-    "Uid": "intro_005",
+    "Uid": "INFORMATIONTECHNOLOGY",
+    "Category": "CollegeCourse",
     "ImageUrl": "",
-    "Title": "Introduction to Programming",
+    "Title": "Information Technology",
     "Description": "Learn the core concepts of programming using beginner-friendly examples.",
     "Price": 249.00
   },
   {
-    "Uid": "intro_006",
+    "Uid": "CRIMINOLOGY",
+    "Category": "CollegeCourse",
     "ImageUrl": "",
-    "Title": "General Chemistry",
+    "Title": "Criminology",
     "Description": "Understand chemical reactions, elements, and the periodic table.",
     "Price": 179.00
   }

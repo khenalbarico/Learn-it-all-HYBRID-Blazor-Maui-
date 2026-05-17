@@ -8,10 +8,38 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\data\introductory_books.json" />
+    <Content Remove="wwwroot\imgs\app_logo.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\CRIMINOLOGY.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\INFORMATIONTECHNOLOGY.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\L.E.T.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\PHARMACY.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\PHYSICS.png" />
+    <Content Remove="wwwroot\imgs\introductory_imgs\PSYCHOMETRICIAN.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\data\introductory_books.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\app_logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\CRIMINOLOGY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\INFORMATIONTECHNOLOGY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\L.E.T.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\PHARMACY.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\PHYSICS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\imgs\introductory_imgs\PSYCHOMETRICIAN.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
