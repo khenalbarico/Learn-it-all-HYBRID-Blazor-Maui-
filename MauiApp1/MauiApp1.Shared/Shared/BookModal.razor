@@ -5,13 +5,11 @@
 {
     <div class="modal-backdrop" @onclick="Close">
         <div class="modal-sheet" @onclick:stopPropagation="true">
-
             <button class="modal-close" @onclick="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 6 6 18M6 6l12 12" />
                 </svg>
             </button>
-
             <div class="modal-cover-wrap">
                 @if (!string.IsNullOrEmpty(Book.ImageUrl))
                 {
@@ -27,18 +25,15 @@
                     </div>
                 }
             </div>
-
             <div class="modal-body">
                 <div class="modal-price-tag @(Book.Price == 0 ? "free" : "")">
                     @(Book.Price == 0 ? "Free" : $"₱{Book.Price:N2}")
                 </div>
                 <h2 class="modal-title">@Book.Title</h2>
-
                 @if (!string.IsNullOrEmpty(Book.Description))
                 {
                     <p class="modal-desc">@Book.Description</p>
                 }
-
                 <button class="cta-button @(Book.Price == 0 ? "blue" : "")" @onclick="HandlePurchase">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         @if (Book.Price == 0)
@@ -56,28 +51,23 @@
                     @(Book.Price == 0 ? "Get for Free" : "Purchase Now")
                 </button>
             </div>
-
         </div>
     </div>
 }
 
 @code {
-    [Parameter] public bool IsVisible        { get; set; }
-    [Parameter] public Book? Book            { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public bool                IsVisible { get; set; }
+    [Parameter] public Book?               Book      { get; set; }
+    [Parameter] public EventCallback       OnClose   { get; set; }
+    [Parameter] public EventCallback<Book> OnBuy     { get; set; }
 
     private async Task Close() => await OnClose.InvokeAsync();
 
     private async Task HandlePurchase()
     {
-        if (State.CurrentUser is null)
-        {
-            State.PendingBook = Book;
-            await OnClose.InvokeAsync();
-            Nav.NavigateTo("/auth");
-            return;
-        }
+        if (Book is null) return;
 
-        // TODO: call purchase API when ready
+        await OnClose.InvokeAsync();
+        await OnBuy.InvokeAsync(Book);
     }
 }

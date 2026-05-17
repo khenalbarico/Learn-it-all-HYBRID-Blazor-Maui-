@@ -6,6 +6,7 @@ namespace MauiApp1.Shared.State;
 public class AppState
 {
     public IEnumerable<Book> Books        { get; private set; } = [];
+    public IEnumerable<Book> IntroBooks   { get; private set; } = [];
     public bool              IsLoading    { get; private set; } = false;
     public bool              HasLoaded    { get; private set; } = false;
     public string?           Error        { get; private set; }
@@ -13,6 +14,7 @@ public class AppState
     public AppUser?          CurrentUser  { get; private set; }
     public Book?             PendingBook  { get; set; }
     public GetSignInResult?  SignInResult { get; set; }
+    public string?           IdToken      { get; private set; }
 
     public event Action?     OnChange;
 
@@ -29,6 +31,12 @@ public class AppState
         IsLoading = false;
         HasLoaded = true;
         Error     = null;
+        NotifyChanged();
+    }
+
+    public void SetIntroBooks(IEnumerable<Book> books)
+    {
+        IntroBooks = books;
         NotifyChanged();
     }
 
@@ -57,10 +65,18 @@ public class AppState
         NotifyChanged();
     }
 
+    public void SetSignInResult(GetSignInResult result)
+    {
+        SignInResult = result;
+        IdToken      = result.IdToken;
+        NotifyChanged();
+    }
+
     public void ClearUser()
     {
         CurrentUser  = null;
         SignInResult = null;
+        IdToken      = null;
         NotifyChanged();
     }
 

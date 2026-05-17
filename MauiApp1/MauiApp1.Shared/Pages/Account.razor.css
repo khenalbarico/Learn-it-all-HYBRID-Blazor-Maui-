@@ -1,6 +1,45 @@
 .account-page {
     padding-bottom: var(--nav-height);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
 }
+
+.account-not-signed-in {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    gap: 12px;
+}
+
+    .account-not-signed-in svg {
+        opacity: 0.35;
+    }
+
+    .account-not-signed-in h3 {
+        font-size: 22px;
+        margin-top: 8px;
+        color: var(--clr-ink);
+        font-family: var(--font-display);
+    }
+
+    .account-not-signed-in p {
+        font-size: 14px;
+        color: var(--clr-text-muted);
+        max-width: 240px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .account-not-signed-in .cta-button {
+        width: auto;
+        padding: 14px 32px;
+        margin-top: 8px;
+    }
 
 .account-header {
     padding: 52px 20px 32px;
@@ -146,6 +185,8 @@
 
 .menu-list {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .menu-item {

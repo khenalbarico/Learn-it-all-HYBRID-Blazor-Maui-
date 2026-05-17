@@ -1,132 +1,165 @@
 ﻿@page "/account"
 @inject AppState State
+@inject IAppAuth Auth
+@inject NavigationManager Nav
 @implements IDisposable
 
 <div class="account-page">
-    <div class="account-header">
-        <div class="avatar-wrap">R</div>
-        <h2>Reader</h2>
-        <p>reader@example.com</p>
-    </div>
 
-    <div class="account-section">
-        <div class="stats-row">
-            <div class="stat-item">
-                <div class="stat-value">@State.Books.Count()</div>
-                <div class="stat-label">In Library</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" style="color:var(--clr-orange);">0</div>
-                <div class="stat-label">Reading</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Finished</div>
+    @if (State.CurrentUser is null)
+    {
+        <div class="account-not-signed-in">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+            <h3>Not signed in</h3>
+            <p>Sign in to access your account, track your reading, and manage your purchases.</p>
+            <button class="cta-button blue" @onclick='() => Nav.NavigateTo("/auth")'>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Sign In
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="account-header">
+            <div class="avatar-wrap">@AvatarLetter</div>
+            <h2>@(State.CurrentUser.DisplayName)</h2>
+            <p>@(State.CurrentUser.Email)</p>
+        </div>
+
+        <div class="account-section">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">@State.Books.Count()</div>
+                    <div class="stat-label">In Library</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color:var(--clr-orange);">0</div>
+                    <div class="stat-label">Reading</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Finished</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="account-section">
-        <p class="section-title">Account</p>
-        <ul class="menu-list">
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span class="menu-item-label">Edit Profile</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                <span class="menu-item-label">Change Password</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                <span class="menu-item-label">Subscriptions</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-        </ul>
-    </div>
+        <div class="account-section">
+            <p class="section-title">Account</p>
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span class="menu-item-label">Edit Profile</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    <span class="menu-item-label">Change Password</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span class="menu-item-label">Subscriptions</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+            </ul>
+        </div>
 
-    <div class="account-section">
-        <p class="section-title">Preferences</p>
-        <ul class="menu-list">
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                <span class="menu-item-label">Reading Preferences</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-                <span class="menu-item-label">Notifications</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-        </ul>
-    </div>
+        <div class="account-section">
+            <p class="section-title">Preferences</p>
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                    <span class="menu-item-label">Reading Preferences</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    <span class="menu-item-label">Notifications</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+            </ul>
+        </div>
 
-    <div class="account-section">
-        <p class="section-title">Support</p>
-        <ul class="menu-list">
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                <span class="menu-item-label">Help Center</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-            <li class="menu-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-                <span class="menu-item-label">Terms & Privacy</span>
-                <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m9 18 6-6-6-6" />
-                </svg>
-            </li>
-        </ul>
-    </div>
+        <div class="account-section">
+            <p class="section-title">Support</p>
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span class="menu-item-label">Help Center</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+                <li class="menu-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    <span class="menu-item-label">Terms & Privacy</span>
+                    <svg class="menu-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </li>
+            </ul>
+        </div>
 
-    <button class="sign-out-btn">Sign Out</button>
+        <button class="sign-out-btn" @onclick="SignOutAsync">Sign Out</button>
+    }
 </div>
 
 @code {
+    private string AvatarLetter =>
+        State.CurrentUser?.DisplayName?.FirstOrDefault().ToString().ToUpper()
+        ?? State.CurrentUser?.Email?.FirstOrDefault().ToString().ToUpper()
+        ?? "?";
+
     protected override void OnInitialized()
+        => State.OnChange += StateHasChanged;
+
+    private async Task SignOutAsync()
     {
-        State.OnChange += StateHasChanged;
+        await Auth.SignOutAsync();
+        State.ClearUser();
+        Nav.NavigateTo("/auth");
     }
 
     public void Dispose()
-    {
-        State.OnChange -= StateHasChanged;
-    }
+        => State.OnChange -= StateHasChanged;
 }

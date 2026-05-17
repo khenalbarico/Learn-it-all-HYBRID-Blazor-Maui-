@@ -1,0 +1,44 @@
+[
+  {
+    "Uid": "intro_001",
+    "ImageUrl": "",
+    "Title": "Introduction to Algebra",
+    "Description": "A beginner-friendly guide to algebraic thinking and problem solving.",
+    "Price": 0
+  },
+  {
+    "Uid": "intro_002",
+    "ImageUrl": "",
+    "Title": "Basic Physics",
+    "Description": "Explore the fundamental principles of physics through simple explanations.",
+    "Price": 149.00
+  },
+  {
+    "Uid": "intro_003",
+    "ImageUrl": "",
+    "Title": "World History 101",
+    "Description": "A comprehensive overview of major historical events across civilizations.",
+    "Price": 199.00
+  },
+  {
+    "Uid": "intro_004",
+    "ImageUrl": "",
+    "Title": "English Grammar Essentials",
+    "Description": "Master the rules of English grammar with practical examples.",
+    "Price": 0
+  },
+  {
+    "Uid": "intro_005",
+    "ImageUrl": "",
+    "Title": "Introduction to Programming",
+    "Description": "Learn the core concepts of programming using beginner-friendly examples.",
+    "Price": 249.00
+  },
+  {
+    "Uid": "intro_006",
+    "ImageUrl": "",
+    "Title": "General Chemistry",
+    "Description": "Understand chemical reactions, elements, and the periodic table.",
+    "Price": 179.00
+  }
+]
