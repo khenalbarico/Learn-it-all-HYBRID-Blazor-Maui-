@@ -270,14 +270,6 @@
                 else
                 {
                     State.SetUser(appUser);
-
-                    if (State.HasLoaded == false)
-                    {
-                        State.SetLoading();
-                        var books = await Api.GetAllBooksAsync();
-                        State.SetBooks(books);
-                    }
-
                     RedirectAfterAuth();
                 }
             }
@@ -321,16 +313,7 @@
             };
 
             await Api.SaveAppUser(newUser);
-
             State.SetUser(newUser);
-
-            if (!State.HasLoaded)
-            {
-                State.SetLoading();
-                var books = await Api.GetAllBooksAsync();
-                State.SetBooks(books);
-            }
-
             RedirectAfterAuth();
         }
         catch (Exception ex)

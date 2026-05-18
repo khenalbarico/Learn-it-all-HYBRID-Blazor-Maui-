@@ -5,10 +5,11 @@ namespace MauiApp1.Shared.State;
 
 public class AppState
 {
-    public IEnumerable<Book> Books        { get; private set; } = [];
+    private readonly Dictionary<string, IEnumerable<Book>> _bookCache        = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string>                      _loadingCategories = new(StringComparer.OrdinalIgnoreCase);
+
     public IEnumerable<Book> IntroBooks   { get; private set; } = [];
     public bool              IsLoading    { get; private set; } = false;
-    public bool              HasLoaded    { get; private set; } = false;
     public string?           Error        { get; private set; }
     public Book?             ActiveBook   { get; private set; }
     public AppUser?          CurrentUser  { get; private set; }
@@ -18,18 +19,28 @@ public class AppState
 
     public event Action?     OnChange;
 
-    public void SetLoading()
+    public bool HasCategoryLoaded(string category)
+        => _bookCache.ContainsKey(category);
+
+    public bool IsCategoryLoading(string category)
+        => _loadingCategories.Contains(category);
+
+    public IEnumerable<Book> GetBooks(string category)
+        => _bookCache.TryGetValue(category, out var books) ? books : [];
+
+    public void SetCategoryLoading(string category)
     {
+        _loadingCategories.Add(category);
         IsLoading = true;
         Error     = null;
         NotifyChanged();
     }
 
-    public void SetBooks(IEnumerable<Book> books)
+    public void SetBooks(string category, IEnumerable<Book> books)
     {
-        Books     = books;
+        _bookCache[category] = books;
+        _loadingCategories.Remove(category);
         IsLoading = false;
-        HasLoaded = true;
         Error     = null;
         NotifyChanged();
     }
@@ -44,6 +55,7 @@ public class AppState
     {
         Error     = message;
         IsLoading = false;
+        _loadingCategories.Clear();
         NotifyChanged();
     }
 
@@ -77,6 +89,8 @@ public class AppState
         CurrentUser  = null;
         SignInResult = null;
         IdToken      = null;
+        _bookCache.Clear();
+        _loadingCategories.Clear();
         NotifyChanged();
     }
 

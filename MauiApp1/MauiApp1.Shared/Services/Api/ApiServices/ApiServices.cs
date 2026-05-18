@@ -12,8 +12,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            var resp = await _apiClient.SubmitAsync<AppUser>("IAppRepository", "TryGetAppUser", new { uid });
-            return resp;
+            return await _apiClient.SubmitAsync<AppUser>("IAppRepository", "TryGetAppUser", new { uid });
         }
         catch (Exception ex) when (ex.Message.Contains("no content", StringComparison.OrdinalIgnoreCase)
                                 || ex.Message.Contains("null", StringComparison.OrdinalIgnoreCase)
@@ -39,12 +38,53 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
         }
     }
 
-    public async Task<IEnumerable<Book>> GetAllBooksAsync()
+    public async Task<IEnumerable<Book>> GetAllBooksAsync(string category)
     {
         try
         {
-            var resp = await _apiClient.GetAsync<IEnumerable<Book>>("IAppRepository", "GetAllBooksAsync");
-            return resp;
+            return await _apiClient.SubmitAsync<IEnumerable<Book>>("IAppRepository", "GetAllBooksAsync", new { category });
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public async Task<Book?> GetBookAsync(string category, string bookUid)
+    {
+        try
+        {
+            return await _apiClient.SubmitAsync<Book>("IAppRepository", "GetBookAsync", new { category, bookUid });
+        }
+        catch (Exception ex) when (ex.Message.Contains("no content", StringComparison.OrdinalIgnoreCase)
+                                || ex.Message.Contains("null", StringComparison.OrdinalIgnoreCase)
+                                || ex.Message.Contains("204", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public async Task AddToLibraryAsync(LibraryEntry entry)
+    {
+        try
+        {
+            await _apiClient.SubmitAsync("IAppRepository", "AddToLibraryAsync", new { entry });
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public async Task<bool> UserOwnsBookAsync(string bookUid)
+    {
+        try
+        {
+            return await _apiClient.SubmitAsync<bool>("IAppRepository", "UserOwnsBookAsync", new { bookUid });
         }
         catch (Exception ex)
         {
@@ -72,8 +112,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            var resp = await _apiClient.SubmitAsync<GetSignInResult>("IAppAuth", "SignInAsync", new { email, password });
-            return resp;
+            return await _apiClient.SubmitAsync<GetSignInResult>("IAppAuth", "SignInAsync", new { email, password });
         }
         catch (Exception ex)
         {

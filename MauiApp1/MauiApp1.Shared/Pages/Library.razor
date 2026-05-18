@@ -21,184 +21,205 @@
         <p class="lib-subtitle">Discover your next great read</p>
     </div>
 
-    <div class="lib-search-wrap">
-        <div class="lib-search">
-            <svg class="lib-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input type="text"
-                   placeholder="Search books, topics..."
-                   @bind="searchQuery"
-                   @bind:event="oninput" />
-            @if (!string.IsNullOrEmpty(searchQuery))
+    @if (State.CurrentUser is null)
+    {
+        <div class="lib-intro-grid">
+            @foreach (var book in State.IntroBooks)
             {
-                <button class="lib-search-clear" @onclick="() => searchQuery = string.Empty" title="Clear">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 6 6 18M6 6l12 12" />
-                    </svg>
-                </button>
+                var b = book;
+                <div class="lib-book-card lib-scroll-card" @onclick="() => OpenBookModal(b)">
+                    <div class="lib-cover-wrap">
+                        <img src="@GetBookImage(b)" alt="@b.Title" loading="lazy" onerror="this.src='imgs/app_logo.png'" />
+                        <span class="lib-price-badge @(b.Price == 0 ? "free" : "paid")">
+                            @(b.Price == 0 ? "Free" : $"₱{b.Price:N2}")
+                        </span>
+                    </div>
+                    <div class="lib-book-info">
+                        <div class="lib-book-title">@b.Title</div>
+                        @if (!string.IsNullOrEmpty(b.Description))
+                        {
+                            <div class="lib-book-desc">@b.Description</div>
+                        }
+                    </div>
+                </div>
             }
         </div>
-    </div>
 
-    @if (State.Error is not null)
-    {
-        <div class="lib-empty">
-            <div class="lib-empty-icon error">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="m15 9-6 6M9 9l6 6" />
+        <div class="lib-auth-nudge">
+            <div class="lib-nudge-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
             </div>
-            <h3>Something went wrong</h3>
-            <p>@State.Error</p>
+            <div class="lib-nudge-text">
+                <span class="lib-nudge-title">More books await</span>
+                <span class="lib-nudge-desc">Sign in to unlock the full library</span>
+            </div>
+            <button class="lib-nudge-btn" @onclick='() => Nav.NavigateTo("/auth")'>
+                Sign in
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </button>
         </div>
     }
-    else if (!FilteredBooks.Any())
+    else if (selectedCategory is null)
     {
-        <div class="lib-empty">
-            <div class="lib-empty-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                </svg>
+        <div class="lib-category-picker">
+            <p class="lib-picker-label">Choose a category</p>
+            <div class="lib-picker-grid">
+
+                <button class="lib-picker-card" @onclick='() => SelectCategory("Reviewer")'>
+                    <div class="lib-picker-icon reviewer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                    </div>
+                    <div class="lib-picker-text">
+                        <span class="lib-picker-name">Reviewer</span>
+                        <span class="lib-picker-desc">Board exam &amp; licensure prep</span>
+                    </div>
+                    <div class="lib-picker-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                    @if (State.HasCategoryLoaded("Reviewer"))
+                    {
+                        <span class="lib-picker-cached">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Loaded
+                        </span>
+                    }
+                </button>
+
+                <button class="lib-picker-card" @onclick='() => SelectCategory("CollegeCourse")'>
+                    <div class="lib-picker-icon college">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                            <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                        </svg>
+                    </div>
+                    <div class="lib-picker-text">
+                        <span class="lib-picker-name">College Course</span>
+                        <span class="lib-picker-desc">University subjects &amp; references</span>
+                    </div>
+                    <div class="lib-picker-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                    @if (State.HasCategoryLoaded("CollegeCourse"))
+                    {
+                        <span class="lib-picker-cached">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Loaded
+                        </span>
+                    }
+                </button>
+
             </div>
-            <h3>No books found</h3>
-            <p>@(searchQuery.Length > 0 ? "Try a different search term." : "Your library is empty right now.")</p>
         </div>
     }
     else
     {
-        <div class="lib-count-row">
-            <span class="lib-count-label">@FilteredBooks.Count() titles</span>
-            <span class="lib-count-line"></span>
+        <div class="lib-cat-topbar">
+            <button class="lib-back-btn" @onclick="BackToPicker">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Categories
+            </button>
+            <span class="lib-cat-active-name">@GetCategoryDisplayName(selectedCategory)</span>
         </div>
 
-        @foreach (var group in GroupedBooks)
-        {
-            var categoryKey = group.Key;
-            var allBooks = group.ToList();
-            var isExpanded = expandedCategories.Contains(categoryKey);
-            var showLoadAll = !isExpanded && allBooks.Count > PreviewCount;
-
-            <div class="lib-category">
-                <div class="lib-cat-header">
-                    <div class="lib-cat-icon">
-                        @if (categoryKey == "Reviewer")
-                        {
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 11l3 3L22 4" />
-                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                            </svg>
-                        }
-                        else
-                        {
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                                <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                            </svg>
-                        }
-                    </div>
-                    <span class="lib-cat-name">@GetCategoryDisplayName(categoryKey)</span>
-                    <span class="lib-cat-badge">@allBooks.Count</span>
-                </div>
-
-                @if (isExpanded)
+        <div class="lib-search-wrap">
+            <div class="lib-search">
+                <svg class="lib-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="text"
+                       placeholder="Search books, topics..."
+                       @bind="searchQuery"
+                       @bind:event="oninput" />
+                @if (!string.IsNullOrEmpty(searchQuery))
                 {
-                    <div class="lib-grid-expanded">
-                        @foreach (var book in allBooks)
-                        {
-                            var b = book;
-                            <div class="lib-book-card" @onclick="() => OpenBookModal(b)">
-                                <div class="lib-cover-wrap">
-                                    <img src="@GetBookImage(b)" alt="@b.Title" loading="lazy" onerror="this.src='imgs/app_logo.png'" />
-                                    <span class="lib-price-badge @(b.Price == 0 ? "free" : "paid")">
-                                        @(b.Price == 0 ? "Free" : $"₱{b.Price:N2}")
-                                    </span>
-                                </div>
-                                <div class="lib-book-info">
-                                    <div class="lib-book-title">@b.Title</div>
-                                    @if (!string.IsNullOrEmpty(b.Description))
-                                    {
-                                        <div class="lib-book-desc">@b.Description</div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="lib-collapse-wrap">
-                        <button class="lib-collapse-btn" @onclick="() => CollapseCategory(categoryKey)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m18 15-6-6-6 6" />
-                            </svg>
-                            Show less
-                        </button>
-                    </div>
-                }
-                else
-                {
-                    <div class="lib-scroll-row">
-                        @foreach (var book in allBooks.Take(PreviewCount))
-                        {
-                            var b = book;
-                            <div class="lib-book-card lib-scroll-card" @onclick="() => OpenBookModal(b)">
-                                <div class="lib-cover-wrap">
-                                    <img src="@GetBookImage(b)" alt="@b.Title" loading="lazy" onerror="this.src='imgs/app_logo.png'" />
-                                    <span class="lib-price-badge @(b.Price == 0 ? "free" : "paid")">
-                                        @(b.Price == 0 ? "Free" : $"₱{b.Price:N2}")
-                                    </span>
-                                </div>
-                                <div class="lib-book-info">
-                                    <div class="lib-book-title">@b.Title</div>
-                                    @if (!string.IsNullOrEmpty(b.Description))
-                                    {
-                                        <div class="lib-book-desc">@b.Description</div>
-                                    }
-                                </div>
-                            </div>
-                        }
-
-                        @if (showLoadAll)
-                        {
-                            <div class="lib-more-card" @onclick="() => ExpandCategory(categoryKey)">
-                                <div class="lib-more-inner">
-                                    <div class="lib-more-circle">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M5 12h14M12 5l7 7-7 7" />
-                                        </svg>
-                                    </div>
-                                    <span class="lib-more-count">+@(allBooks.Count - PreviewCount)</span>
-                                    <span class="lib-more-label">more</span>
-                                    <span class="lib-more-sub">View all</span>
-                                </div>
-                            </div>
-                        }
-                    </div>
+                    <button class="lib-search-clear" @onclick="() => searchQuery = string.Empty" title="Clear">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                    </button>
                 }
             </div>
-        }
+        </div>
 
-        @if (State.CurrentUser is null)
+        @if (State.Error is not null)
         {
-            <div class="lib-auth-nudge">
-                <div class="lib-nudge-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            <div class="lib-empty">
+                <div class="lib-empty-icon error">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m15 9-6 6M9 9l6 6" />
                     </svg>
                 </div>
-                <div class="lib-nudge-text">
-                    <span class="lib-nudge-title">More books await</span>
-                    <span class="lib-nudge-desc">Sign in to unlock the full library</span>
-                </div>
-                <button class="lib-nudge-btn" @onclick='() => Nav.NavigateTo("/auth")'>
-                    Sign in
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
+                <h3>Something went wrong</h3>
+                <p>@State.Error</p>
+            </div>
+        }
+        else if (State.IsCategoryLoading(selectedCategory))
+        {
+            <div class="lib-empty">
+                <div class="lib-spinner"></div>
+                <p>Loading books...</p>
+            </div>
+        }
+        else if (!FilteredBooks.Any())
+        {
+            <div class="lib-empty">
+                <div class="lib-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                     </svg>
-                </button>
+                </div>
+                <h3>No books found</h3>
+                <p>@(searchQuery.Length > 0 ? "Try a different search term." : "This category has no books yet.")</p>
+            </div>
+        }
+        else
+        {
+            <div class="lib-count-row">
+                <span class="lib-count-label">@FilteredBooks.Count() titles</span>
+                <span class="lib-count-line"></span>
+            </div>
+
+            <div class="lib-grid-expanded">
+                @foreach (var book in FilteredBooks)
+                {
+                    var b = book;
+                    <div class="lib-book-card" @onclick="() => OpenBookModal(b)">
+                        <div class="lib-cover-wrap">
+                            <img src="@GetBookImage(b)" alt="@b.Title" loading="lazy" onerror="this.src='imgs/app_logo.png'" />
+                            <span class="lib-price-badge @(b.Price == 0 ? "free" : "paid")">
+                                @(b.Price == 0 ? "Free" : $"₱{b.Price:N2}")
+                            </span>
+                        </div>
+                        <div class="lib-book-info">
+                            <div class="lib-book-title">@b.Title</div>
+                            @if (!string.IsNullOrEmpty(b.Description))
+                            {
+                                <div class="lib-book-desc">@b.Description</div>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
         }
     }
@@ -210,37 +231,17 @@
            OnBuy="HandleBuy" />
 
 @code {
-    private const int PreviewCount = 4;
-
     private string searchQuery = "";
     private bool modalVisible = false;
     private Book? selectedBook = null;
-    private HashSet<string> expandedCategories = new();
-
-    private IEnumerable<Book> DisplayedBooks =>
-        State.CurrentUser is not null && State.HasLoaded
-            ? State.Books
-            : State.IntroBooks;
+    private string? selectedCategory = null;
 
     private IEnumerable<Book> FilteredBooks =>
         string.IsNullOrWhiteSpace(searchQuery)
-            ? DisplayedBooks
-            : DisplayedBooks.Where(b =>
+            ? State.GetBooks(selectedCategory ?? "")
+            : State.GetBooks(selectedCategory ?? "").Where(b =>
                 b.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
                 b.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-
-    private IEnumerable<IGrouping<string, Book>> GroupedBooks =>
-        FilteredBooks
-            .OrderBy(b => CategoryOrder(b.Category))
-            .ThenBy(b => b.Title, StringComparer.OrdinalIgnoreCase)
-            .GroupBy(b => b.Category);
-
-    private int CategoryOrder(string category) => category switch
-    {
-        "Reviewer" => 0,
-        "CollegeCourse" => 1,
-        _ => 2
-    };
 
     private string GetCategoryDisplayName(string category) => category switch
     {
@@ -248,9 +249,6 @@
         "CollegeCourse" => "College Course",
         _ => category
     };
-
-    private void ExpandCategory(string key) => expandedCategories.Add(key);
-    private void CollapseCategory(string key) => expandedCategories.Remove(key);
 
     protected override async Task OnInitializedAsync()
     {
@@ -261,27 +259,36 @@
             var intro = await IntroBooks.LoadAsync();
             State.SetIntroBooks(intro);
         }
+    }
 
-        if (State.CurrentUser is not null && !State.HasLoaded && !State.IsLoading)
+    private async Task SelectCategory(string category)
+    {
+        selectedCategory = category;
+        searchQuery      = "";
+
+        if (State.HasCategoryLoaded(category))
+            return;
+
+        State.SetCategoryLoading(category);
+        try
         {
-            State.SetLoading();
-            try
-            {
-                var books = await Api.GetAllBooksAsync();
-                State.SetBooks(books);
-            }
-            catch (Exception ex)
-            {
-                State.SetError(ex.Message);
-            }
+            var books = await Api.GetAllBooksAsync(category);
+            State.SetBooks(category, books);
         }
+        catch (Exception ex)
+        {
+            State.SetError(ex.Message);
+        }
+    }
+
+    private void BackToPicker()
+    {
+        selectedCategory = null;
+        searchQuery      = "";
     }
 
     private string GetBookImage(Book book)
     {
-        if (!string.IsNullOrWhiteSpace(book.ImageUrl))
-            return book.ImageUrl;
-
         if (!string.IsNullOrWhiteSpace(book.Uid))
             return $"imgs/introductory_imgs/{book.Uid}.png";
 
@@ -296,8 +303,8 @@
 
     private void CloseModal()
     {
-        modalVisible  = false;
-        selectedBook  = null;
+        modalVisible = false;
+        selectedBook = null;
     }
 
     private void HandleBuy(Book book)
