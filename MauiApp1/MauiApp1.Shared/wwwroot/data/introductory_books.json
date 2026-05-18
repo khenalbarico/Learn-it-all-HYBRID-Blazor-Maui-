@@ -5,7 +5,7 @@
     "ImageUrl": "",
     "Title": "Psychometrician",
     "Description": "A beginner-friendly guide to algebraic thinking and problem solving.",
-    "Price": 0
+    "Price": 49.00
   },
   {
     "Uid": "PHARMACY",
@@ -13,7 +13,7 @@
     "ImageUrl": "",
     "Title": "Pharmacy",
     "Description": "Explore the fundamental principles of physics through simple explanations.",
-    "Price": 149.00
+    "Price": 49.00
   },
   {
     "Uid": "L.E.T",
@@ -21,7 +21,7 @@
     "ImageUrl": "",
     "Title": "L.E.T",
     "Description": "A comprehensive overview of major historical events across civilizations.",
-    "Price": 199.00
+    "Price": 49.00
   },
   {
     "Uid": "PHYSICS",
@@ -29,7 +29,7 @@
     "ImageUrl": "",
     "Title": "Physics",
     "Description": "Master the rules of English grammar with practical examples.",
-    "Price": 0
+    "Price": 49.00
   },
   {
     "Uid": "INFORMATIONTECHNOLOGY",
@@ -37,7 +37,7 @@
     "ImageUrl": "",
     "Title": "Information Technology",
     "Description": "Learn the core concepts of programming using beginner-friendly examples.",
-    "Price": 249.00
+    "Price": 49.00
   },
   {
     "Uid": "CRIMINOLOGY",
@@ -45,6 +45,6 @@
     "ImageUrl": "",
     "Title": "Criminology",
     "Description": "Understand chemical reactions, elements, and the periodic table.",
-    "Price": 179.00
+    "Price": 49.00
   }
 ]
