@@ -285,9 +285,11 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    align-items: center;
 }
 
 .auth-field {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -315,6 +317,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
     .auth-input-wrap .input-icon {
@@ -385,6 +388,7 @@
     }
 
 .auth-error {
+    width: 100%;
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -397,6 +401,7 @@
     font-weight: 500;
     line-height: 1.5;
     animation: error-shake 0.4s ease both;
+    box-sizing: border-box;
 }
 
 @keyframes error-shake {
@@ -433,6 +438,7 @@
     justify-content: center;
     gap: 9px;
     width: 100%;
+    align-self: center;
     padding: 15px 20px;
     background: linear-gradient(135deg, #1B6CA8 0%, #1558a0 100%);
     color: #fff;
@@ -450,6 +456,8 @@
     animation-delay: 0.5s;
     position: relative;
     overflow: hidden;
+    text-align: center;
+    box-sizing: border-box;
 }
 
     .cta-button::after {

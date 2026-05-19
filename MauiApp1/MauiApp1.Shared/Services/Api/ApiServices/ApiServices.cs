@@ -12,11 +12,11 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            return await _apiClient.SubmitAsync<AppUser>("IAppRepository", "TryGetAppUser", new { uid });
+            return await _apiClient.SubmitAsync<AppUser>("IAppRepository", "TryGetAppUser", uid);
         }
         catch (Exception ex) when (ex.Message.Contains("no content", StringComparison.OrdinalIgnoreCase)
-                                || ex.Message.Contains("null", StringComparison.OrdinalIgnoreCase)
-                                || ex.Message.Contains("204", StringComparison.OrdinalIgnoreCase))
+                                || ex.Message.Contains("null",       StringComparison.OrdinalIgnoreCase)
+                                || ex.Message.Contains("204",        StringComparison.OrdinalIgnoreCase))
         {
             return null;
         }
@@ -30,7 +30,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            await _apiClient.SubmitAsync("IAppRepository", "SaveAppUser", new { user });
+            await _apiClient.SubmitAsync("IAppRepository", "SaveAppUser", user);
         }
         catch (Exception ex)
         {
@@ -42,7 +42,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            return await _apiClient.SubmitAsync<IEnumerable<Book>>("IAppRepository", "GetAllBooksAsync", new { category });
+            return await _apiClient.SubmitAsync<IEnumerable<Book>>("IAppRepository", "GetAllBooksAsync", category);
         }
         catch (Exception ex)
         {
@@ -57,8 +57,8 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
             return await _apiClient.SubmitAsync<Book>("IAppRepository", "GetBookAsync", new { category, bookUid });
         }
         catch (Exception ex) when (ex.Message.Contains("no content", StringComparison.OrdinalIgnoreCase)
-                                || ex.Message.Contains("null", StringComparison.OrdinalIgnoreCase)
-                                || ex.Message.Contains("204", StringComparison.OrdinalIgnoreCase))
+                                || ex.Message.Contains("null",       StringComparison.OrdinalIgnoreCase)
+                                || ex.Message.Contains("204",        StringComparison.OrdinalIgnoreCase))
         {
             return null;
         }
@@ -72,7 +72,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            await _apiClient.SubmitAsync("IAppRepository", "AddToLibraryAsync", new { entry });
+            await _apiClient.SubmitAsync("IAppRepository", "AddToLibraryAsync", entry);
         }
         catch (Exception ex)
         {
@@ -84,7 +84,7 @@ public class ApiServices(IApiClient _apiClient) : IApiServices
     {
         try
         {
-            return await _apiClient.SubmitAsync<bool>("IAppRepository", "UserOwnsBookAsync", new { bookUid });
+            return await _apiClient.SubmitAsync<bool>("IAppRepository", "UserOwnsBookAsync", bookUid);
         }
         catch (Exception ex)
         {
